@@ -1,0 +1,186 @@
+﻿<lwindow:MetroBaseWindow x:Class="HVision.Barcompare.Window.ConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HVision.Barcompare.Window"
+        xmlns:lconverter="clr-namespace:HVision.Barcompare.Converter"
+        xmlns:converter="clr-namespace:HVision.Common.Converter;assembly=HVision.Common"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+        xmlns:lwindow="clr-namespace:HVision.Barcompare.Window"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+        mc:Ignorable="d"
+        x:Name="configWindow" Title="설정" Height="350" Width="400" WindowStartupLocation="CenterOwner"
+        BorderThickness="0" GlowBrush="Black" ResizeMode="NoResize"
+        FontFamily="{StaticResource TenByTenFont}" DataContextChanged="ConfigWindow_DataContextChanged">
+    <lwindow:MetroBaseWindow.InputBindings>
+        <KeyBinding Command="{Binding OkCommand}" Gesture="Escape" />
+    </lwindow:MetroBaseWindow.InputBindings>
+    <mah:MetroWindow.Resources>
+        <lconverter:BoolToImageConverter x:Key="boolToImageConverter" />
+        <converter:ReverseConverter x:Key="reverseConverter" />
+    </mah:MetroWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Background="{DynamicResource AccentColorBrush2}">
+            <Image Source="/Asset/Image/Config_48x48.png" Margin="8" />
+            <TextBlock Text="환경 설정" Style="{StaticResource TitleTextBlockStyle}" />
+        </WrapPanel>
+        <mah:MetroAnimatedTabControl Grid.Row="1" Margin="10">
+            <mah:MetroTabItem Header="일반" ToolTip="일반적인 설정을 합니다.">
+                <Border BorderThickness="1" BorderBrush="DarkGray">
+                    <Grid Margin="5">
+                        <StackPanel HorizontalAlignment="Left">
+                            <Grid Width="300" Margin="5" ToolTip="알람 사운드 반복 횟수입니다. 0으로 설정하는 경우 무제한 반복입니다.">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="3*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Content="알람 반복 횟수" HorizontalAlignment="Right" Style="{StaticResource CommonLabelStyle}" />
+                                <mah:NumericUpDown Grid.Column="1" Width="100" HorizontalAlignment="Left" Minimum="0" Maximum="99" StringFormat="{}{0}" 
+                                                   Value="{Binding Path=Configuration.MaxLoopCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                            <Grid Width="300" Margin="5" ToolTip="잠김을 풀때 사용하는 코드입니다. 최대 8자리입니다.">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="3*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Content="알람 해제 코드" HorizontalAlignment="Right" Style="{StaticResource CommonLabelStyle}" />
+                                <TextBox Grid.Column="1" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Right" MaxLength="8"
+                                     Style="{StaticResource CommomTextBoxStyle}" 
+                                     Text="{Binding Path=Configuration.UnlockCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </mah:MetroTabItem>
+            <mah:MetroTabItem Header="계정" ToolTip="사용자 계정을 관리합니다.">
+                <Border BorderThickness="1" BorderBrush="DarkGray">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" x:Name="grdUserAccountList" AutoGenerateColumns="False" IsReadOnly="False"
+                                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserSortColumns="True"
+                                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  SelectionUnit="FullRow" SelectionMode="Extended" GridLinesVisibility="Horizontal" FontFamily="Arial" 
+                                  Style="{StaticResource AzureDataGrid}"
+                                  ItemsSource="{Binding Path=Configuration.UserAccountList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding Path=SelectedUserAccount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <cmd:EventToCommand Command="{Binding EditCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.InputBindings>
+                                <KeyBinding  Gesture="Delete" 
+                                     Command="{Binding DeleteCommand}" 
+                                     CommandParameter="{Binding ElementName=grdUserAccountList, Path=SelectedItems}" />
+                            </DataGrid.InputBindings>
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                <Grid Background="{TemplateBinding Background}">
+                                                    <ContentPresenter VerticalAlignment="Center" />
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="계정" Width="80" IsReadOnly="True"
+                                                    Binding="{Binding Path=Id, UpdateSourceTrigger=PropertyChanged}" />
+                                <DataGridTextColumn Header="이름" Width="80" IsReadOnly="True"
+                                                    Binding="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <DataGridTextColumn Header="설명" Width="*" IsReadOnly="True"
+                                                    Binding="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <WrapPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15,0">
+                            <Button Width="40" Height="40" ToolTip="새로운 모델을 추가합니다." 
+                                    Style="{DynamicResource MetroCircleButtonStyle}" 
+                                    Command="{Binding Path=AddCommand}">
+                                <Rectangle Width="18" Height="18" 
+                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_add}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Button Width="40" Height="40" ToolTip="선택된 모델을 편집합니다." 
+                                    Style="{DynamicResource MetroCircleButtonStyle}" 
+                                    Command="{Binding Path=EditCommand}">
+                                <Rectangle Width="18" Height="18" 
+                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_edit}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                            <Button Width="40" Height="40" ToolTip="선택 된 모델을 삭제합니다." 
+                                    Style="{DynamicResource MetroCircleButtonStyle}" 
+                                    Command="{Binding Path=DeleteCommand}"
+                                    CommandParameter="{Binding ElementName=grdUserAccountList, Path=SelectedItems}">
+                                <Rectangle Width="18" Height="18" 
+                                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+                        </WrapPanel>
+                    </Grid>
+                </Border>
+            </mah:MetroTabItem>
+            <mah:MetroTabItem Header="라이센스" ToolTip="라이센스를 확인 및 갱신 할 수 있습니다.">
+                <Border BorderThickness="1" BorderBrush="DarkGray">
+                    <Grid Margin="5">
+                        <StackPanel HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Margin="5" ToolTip="라이센스의 등록 상태를 보여줍니다.">
+                                <Label Content="등록 상태" Width="120" HorizontalContentAlignment="Right" Style="{StaticResource CommonLabelStyle}" />
+                                <Image Width="24" Height="24" Margin="10,0,0,0" Source="{Binding Path=IsValidLicense, Converter={StaticResource boolToImageConverter}}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="5" IsEnabled="{Binding Path=IsValidLicense, Converter={StaticResource reverseConverter}}">
+                                <Label Content="갱신 코드" Width="120" HorizontalContentAlignment="Right"
+                                       Style="{StaticResource CommonLabelStyle}" />
+                                <TextBox Width="30" Margin="10,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
+                                         ToolTip="요청 갱신 코드입니다."
+                                         Style="{StaticResource CommomTextBoxStyle}"
+                                         Text="{Binding Path=RequestCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:00}'}" />
+                                <Label Content=":" HorizontalAlignment="Center" Style="{StaticResource CommonLabelStyle}" />
+                                <TextBox x:Name="txbResponseCode" Width="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MaxLength="2"
+                                         ToolTip="응답 갱신 코드를 입력하십시요."
+                                         Style="{StaticResource CommomTextBoxStyle}" 
+                                         Text="{Binding Path=ResponseCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TxbResponseCode_PreviewTextInput" />
+                                <Button Content="적용" Margin="10,0,0,0" Width="60" 
+                                        ToolTip="라이센스를 새롭게 등록합니다."
+                                        Style="{StaticResource AccentedSquareButtonStyle}"
+                                        Command="{Binding Path=LicenseUpdateCommand}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </mah:MetroTabItem>
+        </mah:MetroAnimatedTabControl>
+        <WrapPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button x:Name="btnOk" Width="50" Height="50" ToolTip="설정창을 닫습니다." 
+                    Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding Path=OkCommand}">
+                <Rectangle Width="20" Height="20" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</lwindow:MetroBaseWindow>

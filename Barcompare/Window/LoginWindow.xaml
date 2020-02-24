@@ -1,0 +1,52 @@
+﻿<lwindow:MetroBaseWindow x:Class="HVision.Barcompare.Window.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HVision.Barcompare.Window" IsMinButtonEnabled="False" ShowMaxRestoreButton="False"
+        xmlns:lwindow="clr-namespace:HVision.Barcompare.Window" ShowTitleBar="False"
+        mc:Ignorable="d"
+        x:Name="loginWindow" Title="로그인" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" GlowBrush="Black"
+        BorderThickness="0"
+        FocusManager.FocusedElement="{Binding ElementName=txbId}"
+        FontFamily="{StaticResource TenByTenFont}"
+        Height="210" Width="280" DataContextChanged="LoginWindow_DataContextChanged">
+    <lwindow:MetroBaseWindow.InputBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding LoginCommand}" 
+                    CommandParameter="{Binding ElementName=pwdPassword, UpdateSourceTrigger=PropertyChanged}" />
+        <KeyBinding Command="{Binding CloseCommand}" Gesture="Escape" />
+    </lwindow:MetroBaseWindow.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Border Background="{DynamicResource AccentColorBrush2}" Grid.Row="0">
+            <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="/Asset/Image/Logo_410x105.png" Margin="5" />
+            </WrapPanel>
+        </Border>
+        <StackPanel Grid.Row="1" Margin="50,0" Style="{StaticResource CommonBodyStackPanel}">
+            <Label Content="계정" Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="txbId" ToolTip="계정을 입력하세요." MaxLength="15"
+                     Style="{StaticResource CommomTextBoxStyle}" 
+                     Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Label Content="비밀번호" Style="{StaticResource CommonLabelStyle}" />
+            <PasswordBox x:Name="pwdPassword" ToolTip="비밀번호를 입력하세요." MaxLength="9"
+                         Style="{StaticResource CommonPasswordBoxStyle}" />
+        </StackPanel>
+        <WrapPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Width="40" Height="40" ToolTip="로그인 합니다." 
+                    Style="{DynamicResource MetroCircleButtonStyle}" 
+                    Command="{Binding Path=LoginCommand}" CommandParameter="{Binding ElementName=pwdPassword, UpdateSourceTrigger=PropertyChanged}">
+                <Rectangle Width="20" Height="20" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</lwindow:MetroBaseWindow>

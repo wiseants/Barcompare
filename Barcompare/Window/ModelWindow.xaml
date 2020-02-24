@@ -1,0 +1,148 @@
+﻿<lwindow:MetroBaseWindow x:Class="HVision.Barcompare.Window.ModelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HVision.Barcompare"
+        xmlns:lwindow="clr-namespace:HVision.Barcompare.Window"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+        mc:Ignorable="d" EnableDWMDropShadow="True"
+        x:Name="modelWindow" Title="모델" WindowStartupLocation="CenterOwner" 
+        BorderThickness="0" GlowBrush="Black" 
+        DataContextChanged="ModelWindow_DataContextChanged" Closed="ModelWindow_Closed" 
+        FocusManager.FocusedElement="{Binding ElementName=txbFilter}"
+        FontFamily="{StaticResource TenByTenFont}"
+        Height="{Binding Source={StaticResource Settings}, Path=Default.ModelWindowHeight, Mode=TwoWay}" MinHeight="400"
+        Width="{Binding Source={StaticResource Settings}, Path=Default.ModelWindowWidth, Mode=TwoWay}"  MinWidth="350">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding ClosedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <mah:MetroWindow.InputBindings>
+        <KeyBinding Command="{Binding CloseCommand}" Gesture="Enter">
+            <KeyBinding.CommandParameter>
+                <system:Boolean>True</system:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+        <KeyBinding Command="{Binding CloseCommand}" Gesture="Escape">
+            <KeyBinding.CommandParameter>
+                <system:Boolean>False</system:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+    </mah:MetroWindow.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition />
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Background="{DynamicResource AccentColorBrush2}">
+            <Image Source="/Asset/Image/Book_48x48.png" Margin="8" />
+            <TextBlock Text="모델 매니저" VerticalAlignment="Center" Style="{StaticResource TitleTextBlockStyle}" />
+        </WrapPanel>
+        <Border Grid.Row="1" Margin="10" BorderThickness="1" BorderBrush="DarkGray" Background="White">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <DataGrid Grid.Row="0" x:Name="grdSerialNumberList" AutoGenerateColumns="False" IsReadOnly="False"
+                          CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserSortColumns="True"
+                          VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          SelectionUnit="FullRow" SelectionMode="Extended" GridLinesVisibility="Horizontal" FontFamily="Consolas" 
+                          Style="{StaticResource AzureDataGrid}"
+                          ItemsSource="{Binding Path=FilteredModelList, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding Path=SelectedModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGrid.InputBindings>
+                        <KeyBinding  Gesture="Delete" 
+                                     Command="{Binding DeleteCommand}" 
+                                     CommandParameter="{Binding ElementName=grdSerialNumberList, Path=SelectedItems}" />
+                    </DataGrid.InputBindings>
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridCell">
+                            <EventSetter Event="MouseDoubleClick" Handler="DataGridCell_MouseDoubleClick" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                        <Grid Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="이름" Width="*" IsReadOnly="True"
+                                    Binding="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn Header="시작 시간" Width="140" IsReadOnly="True"
+                                    Binding="{Binding Path=UpdatedDate, Mode=TwoWay, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txbFilter" Grid.Column="0" Margin="5" mah:TextBoxHelper.ClearTextButton="True"
+                             VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" 
+                             HorizontalContentAlignment="Left" Height="30" FontSize="15" FontFamily="Consolas" BorderBrush="LightGray"
+                             ToolTip="모델 이름을 검색합니다." MaxLength="11"
+                             Text="{Binding Path=FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15,0">
+                        <Button Width="40" Height="40" ToolTip="모델 정보를 최초의 값으로 되돌립니다." Style="{DynamicResource MetroCircleButtonStyle}" Visibility="Collapsed"
+                            Command="{Binding Path=ResetCommand}">
+                            <Rectangle Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_reset}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Width="40" Height="40" ToolTip="새로운 모델을 추가합니다." Style="{DynamicResource MetroCircleButtonStyle}" 
+                            Command="{Binding Path=AddCommand}">
+                            <Rectangle Width="18" Height="18" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_add}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Width="40" Height="40" ToolTip="선택 된 모델을 삭제합니다." Style="{DynamicResource MetroCircleButtonStyle}" 
+                            Command="{Binding Path=DeleteCommand}"
+                            CommandParameter="{Binding ElementName=grdSerialNumberList, Path=SelectedItems}">
+                            <Rectangle Width="18" Height="18" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_delete}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </WrapPanel>
+                </Grid>
+            </Grid>
+        </Border>
+        <WrapPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Width="50" Height="50" ToolTip="선택한 모델을 사용합니다."
+                    Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding Path=CloseCommand}">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+                <Rectangle Width="20" Height="20" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</lwindow:MetroBaseWindow>

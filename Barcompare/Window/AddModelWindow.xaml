@@ -1,0 +1,57 @@
+﻿<lwindow:MetroBaseWindow x:Class="HVision.Barcompare.Window.AddModelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:HVision.Barcompare"
+        xmlns:lwindow="clr-namespace:HVision.Barcompare.Window"
+        mc:Ignorable="d" EnableDWMDropShadow="True"
+        x:Name="addModelWindow" Title="추가" WindowStartupLocation="CenterOwner"
+        DataContextChanged="MetroWindow_DataContextChanged" Closed="AddModelWindow_Closed"
+        FocusManager.FocusedElement="{Binding ElementName=txbName}"
+        BorderThickness="0" GlowBrush="Black" 
+        FontFamily="{StaticResource TenByTenFont}"
+        Height="{Binding Source={StaticResource Settings}, Path=Default.AddModelWindowHeight, Mode=TwoWay}" MinHeight="240"
+        Width="{Binding Source={StaticResource Settings}, Path=Default.AddModelWindowWidth, Mode=TwoWay}"  MinWidth="340">
+    <lwindow:MetroBaseWindow.InputBindings>
+        <KeyBinding Command="{Binding AddCommand}" Gesture="Enter" />
+        <KeyBinding Command="{Binding CloseCommand}" Gesture="Escape" />
+    </lwindow:MetroBaseWindow.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0" Background="{DynamicResource AccentColorBrush2}">
+            <Image Source="/Asset/Image/Add_48x48.png" Margin="8" />
+            <TextBlock Text="모델 추가" Style="{StaticResource TitleTextBlockStyle}" />
+        </WrapPanel>
+        <StackPanel Grid.Row="1" Style="{StaticResource CommonBodyStackPanel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="모델 이름" Style="{StaticResource CommonLabelStyle}" />
+                <TextBox x:Name="txbName" Grid.Row="1" ToolTip="추가 할 모델의 이름을 입력합니다." 
+                         mah:TextBoxHelper.ClearTextButton="True" MaxLength="11"
+                         VerticalAlignment="Center" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                         Height="32" FontSize="22" FontFamily="Consolas"                         
+                         Text="{Binding Path=ModelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+            <Grid Height="10" />
+        </StackPanel>
+        <WrapPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button x:Name="btnOk" Width="50" Height="50" ToolTip="입력한 모델을 추가합니다." Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding Path=AddCommand}">
+                <Rectangle Width="20" Height="20" 
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+    </Grid>
+</lwindow:MetroBaseWindow>
