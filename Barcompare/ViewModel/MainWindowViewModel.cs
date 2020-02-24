@@ -1,18 +1,15 @@
 ﻿using HVision.Barcompare.Core;
 using HVision.Barcompare.Model;
 using HVision.Common;
-using HVision.Common.Extension;
 using HVision.Common.Interface;
 using HVision.Common.License;
 using HVision.Common.Mvvm;
 using HVision.Common.Tool;
-using Microsoft.Win32;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
