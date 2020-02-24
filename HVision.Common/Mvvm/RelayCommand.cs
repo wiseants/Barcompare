@@ -36,18 +36,8 @@ namespace HVision.Common.Mvvm
         /// <param name="canExecute">유효성 액선.</param>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException("Not exist execute-action.");
-            }
-
-            if (canExecute == null)
-            {
-                throw new ArgumentNullException("Not exist canExecute-action.");
-            }
-
-            this.execute = execute;
-            this.canExecute = canExecute;
+            this.execute = execute ?? throw new ArgumentNullException("Not exist execute-action.");
+            this.canExecute = canExecute ?? throw new ArgumentNullException("Not exist canExecute-action.");
         }
 
         #endregion
