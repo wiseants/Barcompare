@@ -256,7 +256,7 @@ namespace HVision.Barcompare.ViewModel
             if (TryCheck(out string errorMessage) == false)
             {
                 string unlockCode = Configuration.UnlockCode;
-                if (String.IsNullOrEmpty(unlockCode) == false)
+                if (string.IsNullOrEmpty(unlockCode) == false)
                 {
                     LockWindowViewModel viewModel = new LockWindowViewModel()
                     {
