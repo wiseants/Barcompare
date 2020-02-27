@@ -228,7 +228,7 @@ namespace HVision.Barcompare.ViewModel
                 OpenMessageBoxEvent?.Invoke("라이센스 갱신을 실패했습니다.", MessageBoxButton.OK);
             }
 
-            //ResponseCode = String.Empty;
+            ResponseCode = string.Empty;
             UpdateRequestCode();
         }
 
