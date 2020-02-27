@@ -276,7 +276,7 @@ namespace HVision.Barcompare.ViewModel
             errorMessage = "알 수 없는 알람.";
 
             int plusMarkIndex = SerialNumberFromBarcode.IndexOf('+');
-            if (plusMarkIndex == -1 || SerialNumberFromBarcode.Length != 26)
+            if (plusMarkIndex == -1 || SerialNumberFromBarcode.Length != 25)
             {
                 errorMessage = "형식이 잘못되었습니다.";
                 return false;
