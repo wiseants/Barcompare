@@ -256,16 +256,16 @@ namespace HVision.Barcompare.ViewModel
             if (TryCheck(out string errorMessage) == false)
             {
                 string unlockCode = Configuration.UnlockCode;
-                if (string.IsNullOrEmpty(unlockCode) == false)
-                {
-                    LockWindowViewModel viewModel = new LockWindowViewModel()
-                    {
-                        UnlockCode = unlockCode,
-                        ErrorMessage = errorMessage
-                    };
-                    OpenLockWindowEvent?.Invoke(viewModel);
-                    _player.Stop();
-                }
+                //if (String.IsNullOrEmpty(unlockCode) == false)
+                //{
+                //    LockWindowViewModel viewModel = new LockWindowViewModel()
+                //    {
+                //        UnlockCode = unlockCode,
+                //        ErrorMessage = errorMessage
+                //    };
+                //    OpenLockWindowEvent?.Invoke(viewModel);
+                //    _player.Stop();
+                //}
             }
 
             IsChecked = true;
