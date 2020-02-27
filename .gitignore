@@ -1,0 +1,7 @@
+﻿#Folders
+configuration/
+log/
+
+#extends
+*.bak
+*.orig
